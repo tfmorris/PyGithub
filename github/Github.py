@@ -37,6 +37,18 @@ class Github(object):
     def rate_limiting(self):
         return self.__requester.rate_limiting
 
+    def rate_limit(self,refresh=False):
+        if refresh:
+            headers, data = self.__requester.requestAndCheck(
+                "GET",
+                "/rate_limit",
+                None,
+                None
+            )
+            return (data['rate']['remaining'],data['rate']['limit'])
+        else:
+            return self.rate_limiting()
+        
     def get_user(self, login=GithubObject.NotSet):
         assert login is GithubObject.NotSet or isinstance(login, (str, unicode)), login
         if login is GithubObject.NotSet:
